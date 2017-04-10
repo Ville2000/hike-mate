@@ -2,7 +2,7 @@
 .gradle
 /local.properties
 /.idea
-/.project-notes
+/project-notes
 .DS_Store
 /build
 /captures
