@@ -7,8 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.ArrayList;
+import java.util.zip.Inflater;
 
 import ville.fi.hikemate.Fragments.HikePlansFragment;
 import ville.fi.hikemate.Fragments.HikeListFragment;
@@ -18,6 +23,8 @@ import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
 import ville.fi.hikemate.Resources.HikeList;
 import ville.fi.hikemate.Utils.StorageHandler;
+
+import static android.R.id.list;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,14 +37,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         setupView();
-
-
-        ObjectMapper mapper = new ObjectMapper();
-        StorageHandler sh = new StorageHandler();
-
-        HikeList hikes = sh.readStorage(host);
-        System.out.println("Name: " + hikes.get(0).getName());
     }
 
     public void startTracking(View v) {
