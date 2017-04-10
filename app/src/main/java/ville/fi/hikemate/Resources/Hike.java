@@ -32,4 +32,20 @@ public class Hike {
     public List<HikeLocation> getLocations() {
         return locations;
     }
+
+    @Override
+    public String toString() {
+        String hike = "";
+        hike += "[";
+        for (HikeLocation l : locations) {
+            hike += l.toString();
+            if (!l.equals(locations.get(locations.size() - 1))) {
+                hike += ", ";
+            }
+        }
+
+        hike += "]";
+
+        return hike;
+    }
 }
