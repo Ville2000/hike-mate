@@ -18,6 +18,7 @@ import java.util.List;
 import ville.fi.hikemate.Fragments.HikePlansFragment;
 import ville.fi.hikemate.Fragments.HikeListFragment;
 import ville.fi.hikemate.Fragments.NewHikeFragment;
+import ville.fi.hikemate.Fragments.ViewPagerAdapter;
 import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
 import ville.fi.hikemate.Resources.HikeList;
@@ -73,44 +74,11 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Name: " + higes.get(0).getName());
     }
 
-    public void test(View v) {
-        System.out.println("Mox");
-    }
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new NewHikeFragment(), "New Hike");
         adapter.addFragment(new HikeListFragment(), "Your Hikes");
         adapter.addFragment(new HikePlansFragment(), "Hike Plans");
         viewPager.setAdapter(adapter);
-    }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 }
