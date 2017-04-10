@@ -2,9 +2,6 @@ package ville.fi.hikemate.Activities;
 
 import android.content.Context;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,8 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.List;
 
 import ville.fi.hikemate.Fragments.HikePlansFragment;
 import ville.fi.hikemate.Fragments.HikeListFragment;
@@ -35,46 +30,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupView();
 
+
+        ObjectMapper mapper = new ObjectMapper();
+        StorageHandler sh = new StorageHandler();
+
+        HikeList hikes = sh.readStorage(host);
+        System.out.println("Name: " + hikes.get(0).getName());
+    }
+
+    public void startTracking(View v) {
+        System.out.println("startTracking");
+    }
+
+    public void stopTracking(View v) {
+        System.out.println("stopTracking");
+    }
+
+    private void setupView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-
-
-        Hike hike = new Hike("Moi");
-        hike.addLocation(1.23, 2.22);
-        hike.addLocation(3.02, 1.67);
-        hike.addLocation(7.88, 2.44);
-        hike.addLocation(9.01, 10.23);
-        hike.addLocation(-12.334, 15.2345);
-
-        Hike hikee = new Hike("Hei");
-        hikee.addLocation(1.56, 23.1);
-        hikee.addLocation(2.02, 31.67);
-        hikee.addLocation(87.88, 25.44);
-        hikee.addLocation(11.01, 210.23);
-        hikee.addLocation(-133.334, 150.2345);
-
-        HikeList hikes = new HikeList();
-        hikes.add(hike);
-        hikes.add(hikee);
-
-        ObjectMapper mapper = new ObjectMapper();
-        StorageHandler sh = new StorageHandler();
-
-        HikeList higes = sh.readStorage(host);
-        System.out.println("Name: " + higes.get(0).getName());
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new NewHikeFragment(), "New Hike");
         adapter.addFragment(new HikeListFragment(), "Your Hikes");

@@ -13,7 +13,7 @@ import ville.fi.hikemate.R;
 public class HikeListFragment extends Fragment {
 
     public HikeListFragment() {
-        // Required empty public constructor
+        System.out.println("HikeListFragment");
     }
 
 
