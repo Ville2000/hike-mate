@@ -24,4 +24,12 @@ public class Hike {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void addLocation(double lat, double lng) {
+        locations.add(new HikeLocation(lat, lng));
+    }
+
+    public List<HikeLocation> getLocations() {
+        return locations;
+    }
 }
