@@ -11,15 +11,13 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import ville.fi.hikemate.Fragments.BlankFragment;
+import ville.fi.hikemate.Fragments.HikePlansFragment;
 import ville.fi.hikemate.Fragments.HikeListFragment;
 import ville.fi.hikemate.Fragments.NewHikeFragment;
 import ville.fi.hikemate.Resources.Hike;
 import ville.fi.hikemate.Resources.HikeList;
-import ville.fi.hikemate.Resources.HikeLocation;
 import ville.fi.hikemate.Utils.StorageHandler;
 
 public class MainActivity extends AppCompatActivity {
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new NewHikeFragment(), "New Hike");
         adapter.addFragment(new HikeListFragment(), "Your Hikes");
-        adapter.addFragment(new BlankFragment(), "Hike Plans");
+        adapter.addFragment(new HikePlansFragment(), "Hike Plans");
         viewPager.setAdapter(adapter);
     }
 
