@@ -12,6 +12,10 @@ public class Hike {
     private String name;
     private List<HikeLocation> locations;
 
+    public Hike() {
+
+    }
+
     public Hike(String name) {
         setName(name);
         locations = new LinkedList<>();

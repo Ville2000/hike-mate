@@ -9,6 +9,10 @@ public class HikeLocation {
     private double lat;
     private double lng;
 
+    public HikeLocation() {
+
+    }
+
     public HikeLocation(double lat, double lng) {
         setLat(lat);
         setLng(lng);
