@@ -1,6 +1,7 @@
 package ville.fi.hikemate.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void startTracking(View v) {
         System.out.println("startTracking");
+        Intent i = new Intent(host, MapActivity.class);
+        startActivity(i);
     }
 
     public void stopTracking(View v) {
