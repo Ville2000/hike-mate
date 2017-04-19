@@ -23,6 +23,7 @@ import ville.fi.hikemate.Fragments.ViewPagerAdapter;
 import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
 import ville.fi.hikemate.Resources.HikeList;
+import ville.fi.hikemate.Utils.Debug;
 import ville.fi.hikemate.Utils.StorageHandler;
 
 import static android.R.id.list;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Debug.loadDebug(host);
         setupView();
     }
 
