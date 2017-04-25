@@ -51,7 +51,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         if (ContextCompat.checkSelfPermission(host,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
+            System.out.println("Asking permissions, no permissions");
             Debug.print(host, "Asking permissions", "Requesting permission", "No permissions, dialog", 1);
 
             // Should we show an explanation?
@@ -75,10 +75,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 // result of the request.
             }
         } else {
-
+            System.out.println("Asking permissions, we have a permission");
             ActivityCompat.requestPermissions(thisActivity,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_LOCATION);
+
+
 
             /*
             Debug.print(host, "Asking permissions", "Requesting permission", "We have a permission", 1);
@@ -98,7 +100,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
     }
 
     @Override
@@ -109,10 +110,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
                     try {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                         Debug.print(host, "onRequestPermissionResult", "LocationGranted", "LocationManager requesting", 1);
@@ -124,12 +121,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
+                    // TODO: Go back to MainActivity.
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
