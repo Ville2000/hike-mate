@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private HikeList hikes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("startTracking");
         Intent i = new Intent(host, MapActivity.class);
         startActivity(i);
-    }
-
-    public void stopTracking(View v) {
-        System.out.println("stopTracking");
     }
 
     private void setupView() {
@@ -69,5 +66,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new HikeListFragment(), "Your Hikes");
         adapter.addFragment(new HikePlansFragment(), "Hike Plans");
         viewPager.setAdapter(adapter);
+    }
+
+    public HikeList getHikes() {
+        return hikes;
     }
 }
