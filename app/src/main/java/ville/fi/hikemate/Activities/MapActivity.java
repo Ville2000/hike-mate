@@ -16,10 +16,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
+import ville.fi.hikemate.Resources.HikeList;
 import ville.fi.hikemate.Utils.Debug;
+import ville.fi.hikemate.Utils.StorageHandler;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
@@ -30,12 +34,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location location;
+    private HikeList hikes;
     private Hike hike;
+    private StorageHandler sh;
+    private Polyline hikePolyLine;
+    private boolean firstLocationGot = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        sh = new StorageHandler();
+        hikes = sh.readStorage(host);
 
         hike = new Hike("MyHike");
 
@@ -45,7 +55,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
         locationManager = (LocationManager) host.getSystemService(Context.LOCATION_SERVICE);
         initLocationListener();
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(host,
@@ -63,38 +72,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 // sees the explanation, try again to request the permission.
 
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(thisActivity,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
         } else {
             System.out.println("Asking permissions, we have a permission");
             ActivityCompat.requestPermissions(thisActivity,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_LOCATION);
-
-
-
-            /*
-            Debug.print(host, "Asking permissions", "Requesting permission", "We have a permission", 1);
-
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                Debug.print(host, "Asking permissions", "Requesting permission", "Location Manager Requesting", 1);
-            } catch(SecurityException e) {
-                e.printStackTrace();
-            }
-            */
         }
-
-
     }
 
     @Override
@@ -111,7 +99,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     try {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
                         Debug.print(host, "onRequestPermissionResult", "LocationGranted", "LocationManager requesting", 1);
                     } catch(SecurityException e) {
                         e.printStackTrace();
@@ -134,28 +122,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             @Override
             public void onLocationChanged(Location location) {
                 Debug.print(host, "onLocationChanged", "Changing location", "Location changed", 1);
-                System.out.println("Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
+
                 location.setLatitude(location.getLatitude());
                 location.setLongitude(location.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-
                 hike.addLocation(location.getLatitude(), location.getLongitude());
+
+                hikePolyLine = mMap.addPolyline(new PolylineOptions()
+                        .clickable(false));
+                hikePolyLine.setPoints(hike.getLocations());
+
+                if (firstLocationGot == false) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+                    firstLocationGot = true;
+                } else {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), mMap.getCameraPosition().zoom));
+                }
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
 
             @Override
-            public void onProviderEnabled(String provider) {
-
-            }
+            public void onProviderEnabled(String provider) {}
 
             @Override
-            public void onProviderDisabled(String provider) {
-
-            }
+            public void onProviderDisabled(String provider) {}
         };
     }
 
