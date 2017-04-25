@@ -15,7 +15,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/map"
-        android:text="Nappi"
-        android:id="@+id/button2" />
+        android:text="Cancel"
+        android:id="@+id/button_cancel"
+        android:onClick=""/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_cancel"
+        android:text="Stop and Save"
+        android:id="@+id/button_stopAndSave"
+        android:onClick=""/>
 
 </RelativeLayout>
