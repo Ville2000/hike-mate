@@ -2,6 +2,7 @@ package ville.fi.hikemate.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,9 +21,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.LinkedList;
+
 import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
 import ville.fi.hikemate.Resources.HikeList;
+import ville.fi.hikemate.Resources.HikeLocation;
 import ville.fi.hikemate.Utils.Debug;
 import ville.fi.hikemate.Utils.StorageHandler;
 
@@ -34,20 +39,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location location;
-    private HikeList hikes;
+    private LinkedList<Hike> hikes;
     private Hike hike;
     private StorageHandler sh;
     private Polyline hikePolyLine;
     private boolean firstLocationGot = false;
+    private boolean isTrackingLocation;
+    private Intent mainActivityIntent;
+    private LinkedList<LatLng> hikeLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        mainActivityIntent = new Intent(host, MainActivity.class);
+        isTrackingLocation = true;
         sh = new StorageHandler();
         hikes = sh.readStorage(host);
-
         hike = new Hike("MyHike");
+        hikeLatLng = getLatLng(hike);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -78,11 +88,42 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
         } else {
-            System.out.println("Asking permissions, we have a permission");
-            ActivityCompat.requestPermissions(thisActivity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_LOCATION);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
+                Debug.print(host, "onRequestPermissionResult", "LocationGranted", "LocationManager requesting", 1);
+            } catch(SecurityException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    /**
+     * Returns the user to the main activity view.
+     *
+     * @param v
+     */
+    public void cancelTracking(View v) {
+        isTrackingLocation = false;
+        startActivity(mainActivityIntent);
+    }
+
+    /**
+     * Saves the hike.
+     *
+     * Saves the hike to the storage and returns the user to the main activity.
+     *
+     * @param v
+     */
+    public void saveHike(View v) {
+        isTrackingLocation = false;
+
+        for (LatLng latLng : hikeLatLng) {
+            hike.addLocation(latLng.latitude, latLng.longitude);
+        }
+
+        hikes.add(hike);
+        sh.writeStorage(host, hikes);
+        startActivity(mainActivityIntent);
     }
 
     @Override
@@ -123,19 +164,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             public void onLocationChanged(Location location) {
                 Debug.print(host, "onLocationChanged", "Changing location", "Location changed", 1);
 
-                location.setLatitude(location.getLatitude());
-                location.setLongitude(location.getLongitude());
-                hike.addLocation(location.getLatitude(), location.getLongitude());
+                if (isTrackingLocation) {
+                    hikeLatLng.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
-                hikePolyLine = mMap.addPolyline(new PolylineOptions()
-                        .clickable(false));
-                hikePolyLine.setPoints(hike.getLocations());
+                    hikePolyLine = mMap.addPolyline(new PolylineOptions()
+                            .clickable(false));
+                    hikePolyLine.setPoints(hikeLatLng);
 
-                if (firstLocationGot == false) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-                    firstLocationGot = true;
-                } else {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), mMap.getCameraPosition().zoom));
+                    if (firstLocationGot == false) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+                        firstLocationGot = true;
+                    } else {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), mMap.getCameraPosition().zoom));
+                    }
                 }
             }
 
@@ -152,5 +193,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     public Hike getHike() {
         return hike;
+    }
+
+    public LinkedList<LatLng> getLatLng(Hike hike) {
+        LinkedList<LatLng> locs = new LinkedList<>();
+
+        for (HikeLocation loc: hike.getLocations()) {
+            locs.add(new LatLng(loc.getLat(), loc.getLng()));
+        }
+
+        return locs;
     }
 }
