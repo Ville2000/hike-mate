@@ -1,5 +1,7 @@
 package ville.fi.hikemate.Resources;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
 public class Hike {
 
     private String name;
-    private List<HikeLocation> locations;
+    private List<LatLng> locations;
 
     public Hike() {
 
@@ -30,10 +32,10 @@ public class Hike {
     }
 
     public void addLocation(double lat, double lng) {
-        locations.add(new HikeLocation(lat, lng));
+        locations.add(new LatLng(lat, lng));
     }
 
-    public List<HikeLocation> getLocations() {
+    public List<LatLng> getLocations() {
         return locations;
     }
 
@@ -41,8 +43,8 @@ public class Hike {
     public String toString() {
         String hike = "";
         hike += "[";
-        for (HikeLocation l : locations) {
-            hike += l.toString();
+        for (LatLng l : locations) {
+            hike += "{ \"lat\":" + String.valueOf(l.latitude) + ", \"lng\":" + String.valueOf(l.longitude) + " }";
             if (!l.equals(locations.get(locations.size() - 1))) {
                 hike += ", ";
             }

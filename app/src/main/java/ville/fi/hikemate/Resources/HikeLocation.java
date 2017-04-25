@@ -1,41 +1,34 @@
 package ville.fi.hikemate.Resources;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Ville on 10.4.2017.
  */
 
 public class HikeLocation {
 
-    private double lat;
-    private double lng;
+    private LatLng location;
 
     public HikeLocation() {
 
     }
 
     public HikeLocation(double lat, double lng) {
-        setLat(lat);
-        setLng(lng);
+        location = new LatLng(lat, lng);
     }
 
-    public double getLat() {
-        return lat;
+    public void setLocation(LatLng location) {
+        this.location = location;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public LatLng getLocation() {
+        return location;
     }
 
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
 
     @Override
     public String toString() {
-        return "{ \"lat\":" + String.valueOf(getLat()) + ", \"lng\":" + String.valueOf(getLng()) + " }";
+        return "{ \"lat\":" + String.valueOf(location.latitude) + ", \"lng\":" + String.valueOf(location.longitude) + " }";
     }
 }
