@@ -3,6 +3,7 @@ package ville.fi.hikemate.Utils;
 import android.content.Context;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
 import java.util.List;
 
 import ville.fi.hikemate.Resources.Hike;
@@ -24,7 +26,7 @@ public class StorageHandler {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    public HikeList readStorage(Context host) {
+    public LinkedList<Hike> readStorage(Context host) {
         StringBuilder sb = new StringBuilder();
 
         try {
@@ -44,10 +46,10 @@ public class StorageHandler {
             e.printStackTrace();
         }
 
-        HikeList hikes = null;
+        LinkedList<Hike> hikes = new LinkedList<>();
 
         try {
-            hikes = mapper.readValue(sb.toString(), HikeList.class);
+            hikes = mapper.readValue(sb.toString(), new TypeReference<LinkedList<Hike>>(){});
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,7 +57,7 @@ public class StorageHandler {
         return hikes;
     }
 
-    public void writeStorage(Context host, HikeList hikes) {
+    public void writeStorage(Context host, LinkedList<Hike> hikes) {
         String json = "";
         ObjectMapper mapper = new ObjectMapper();
 

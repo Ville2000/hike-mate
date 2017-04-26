@@ -1,5 +1,7 @@
 package ville.fi.hikemate.Resources;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Ville on 10.4.2017.
  */
@@ -14,28 +16,26 @@ public class HikeLocation {
     }
 
     public HikeLocation(double lat, double lng) {
-        setLat(lat);
-        setLng(lng);
-    }
-
-    public double getLat() {
-        return lat;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public double getLng() {
-        return lng;
-    }
-
     public void setLng(double lng) {
         this.lng = lng;
     }
 
+    public double getLat() {
+        return lat;
+    }
+    public double getLng() { return lng; }
+
+
     @Override
     public String toString() {
-        return "{ \"lat\":" + String.valueOf(getLat()) + ", \"lng\":" + String.valueOf(getLng()) + " }";
+        return "{ \"lat\":" + String.valueOf(lat) + ", \"lng\":" + String.valueOf(lng) + " }";
     }
 }
