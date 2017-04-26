@@ -8,27 +8,34 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class HikeLocation {
 
-    private LatLng location;
+    private double lat;
+    private double lng;
 
     public HikeLocation() {
 
     }
 
     public HikeLocation(double lat, double lng) {
-        location = new LatLng(lat, lng);
+        this.lat = lat;
+        this.lng = lng;
     }
 
-    public void setLocation(LatLng location) {
-        this.location = location;
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
-    public LatLng getLocation() {
-        return location;
+    public void setLng(double lng) {
+        this.lng = lng;
     }
+
+    public double getLat() {
+        return lat;
+    }
+    public double getLng() { return lng; }
 
 
     @Override
     public String toString() {
-        return "{ \"lat\":" + String.valueOf(location.latitude) + ", \"lng\":" + String.valueOf(location.longitude) + " }";
+        return "{ \"lat\":" + String.valueOf(lat) + ", \"lng\":" + String.valueOf(lng) + " }";
     }
 }
