@@ -12,7 +12,7 @@ import java.util.List;
 public class Hike {
 
     private String name;
-    private List<LatLng> locations;
+    private LinkedList<HikeLocation> locations;
 
     public Hike() {
 
@@ -32,10 +32,10 @@ public class Hike {
     }
 
     public void addLocation(double lat, double lng) {
-        locations.add(new LatLng(lat, lng));
+        locations.add(new HikeLocation(lat, lng));
     }
 
-    public List<LatLng> getLocations() {
+    public LinkedList<HikeLocation> getLocations() {
         return locations;
     }
 
@@ -43,8 +43,8 @@ public class Hike {
     public String toString() {
         String hike = "";
         hike += "[";
-        for (LatLng l : locations) {
-            hike += "{ \"lat\":" + String.valueOf(l.latitude) + ", \"lng\":" + String.valueOf(l.longitude) + " }";
+        for (HikeLocation l : locations) {
+            hike += l.toString();
             if (!l.equals(locations.get(locations.size() - 1))) {
                 hike += ", ";
             }
