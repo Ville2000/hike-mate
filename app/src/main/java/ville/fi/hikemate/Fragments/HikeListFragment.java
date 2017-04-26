@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,6 +28,7 @@ import ville.fi.hikemate.Utils.StorageHandler;
 public class HikeListFragment extends Fragment {
     LinkedList<Hike> hikes;
     ObjectMapper mapper;
+    private TextView emptyList;
 
     public HikeListFragment() {
         System.out.println("HikeListFragment");
@@ -43,12 +45,18 @@ public class HikeListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_hike_list, container, false);
 
+        emptyList = (TextView) view.findViewById(R.id.list_emptyList);
+
         ObjectMapper mapper = new ObjectMapper();
         StorageHandler sh = new StorageHandler();
         hikes = sh.readStorage(getActivity());
+        if (hikes.size() < 1) {
+            emptyList.setVisibility(View.VISIBLE);
+        } else {
+            emptyList.setVisibility(View.GONE);
+        }
+
         System.out.println("Hike 0: " + hikes.size());
-        // Hike hike = hikes.get(0);
-        // System.out.println("Test: " + hike.getName());
 
         HikeListAdapter adapter = new HikeListAdapter(getActivity(), R.layout.hike_list_item, hikes);
 
