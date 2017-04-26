@@ -17,7 +17,7 @@
         android:layout_below="@+id/map"
         android:text="Cancel"
         android:id="@+id/button_cancel"
-        android:onClick=""/>
+        android:onClick="cancelTracking"/>
 
     <Button
         android:layout_width="match_parent"
@@ -25,6 +25,6 @@
         android:layout_below="@+id/button_cancel"
         android:text="Stop and Save"
         android:id="@+id/button_stopAndSave"
-        android:onClick=""/>
+        android:onClick="saveHike"/>
 
 </RelativeLayout>
