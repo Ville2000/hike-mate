@@ -19,6 +19,7 @@ public class LocationService extends Service {
     private LocationManager locationManager;
     private LocationListener locationListener;
     private LinkedList<LatLng> locations;
+    private Boolean isServiceRunning = false;
 
     public LocationService() {
     }
@@ -31,14 +32,18 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        locations = new LinkedList<>();
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        initLocationListener();
+        if (!isServiceRunning) {
+            isServiceRunning = true;
 
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
-        } catch(SecurityException e) {
-            e.printStackTrace();
+            locations = new LinkedList<>();
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            initLocationListener();
+
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
+            } catch(SecurityException e) {
+                e.printStackTrace();
+            }
         }
         return START_STICKY;
     }
@@ -73,6 +78,7 @@ public class LocationService extends Service {
         System.out.println("Stopping LocationService");
         locationManager = null;
         locationListener = null;
+        isServiceRunning = false;
         return super.stopService(name);
     }
 }
