@@ -1,16 +1,16 @@
 package ville.fi.hikemate.Activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,13 +21,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 
 import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
-import ville.fi.hikemate.Resources.HikeList;
 import ville.fi.hikemate.Resources.HikeLocation;
+import ville.fi.hikemate.Services.LocationService;
 import ville.fi.hikemate.Utils.Debug;
+import ville.fi.hikemate.Utils.HikeToLatLng;
 import ville.fi.hikemate.Utils.StorageHandler;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
@@ -36,9 +40,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private FragmentActivity thisActivity = this;
     private final int MY_PERMISSIONS_REQUEST_LOCATION = 0;
     private GoogleMap mMap;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private Location location;
     private LinkedList<Hike> hikes;
     private Hike hike;
     private StorageHandler sh;
@@ -47,24 +48,28 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private boolean isTrackingLocation;
     private Intent mainActivityIntent;
     private LinkedList<LatLng> hikeLatLng;
+    private Intent locationServiceIntent;
+    private DateFormat dateFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         mainActivityIntent = new Intent(host, MainActivity.class);
         isTrackingLocation = true;
         sh = new StorageHandler();
         hikes = sh.readStorage(host);
-        hike = new Hike("MyHike");
-        hikeLatLng = getLatLng(hike);
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        hike = new Hike(dateFormat.format(new Date()));
+        hikeLatLng = HikeToLatLng.getLatLng(hike);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        locationManager = (LocationManager) host.getSystemService(Context.LOCATION_SERVICE);
-        initLocationListener();
+        LocalBroadcastManager.getInstance(host).registerReceiver(mMessageReceiver, new IntentFilter("GPSLocations"));
+        locationServiceIntent = new Intent(host, LocationService.class);
 
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(host,
@@ -88,12 +93,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
         } else {
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
-                Debug.print(host, "onRequestPermissionResult", "LocationGranted", "LocationManager requesting", 1);
-            } catch(SecurityException e) {
-                e.printStackTrace();
-            }
+            startService(locationServiceIntent);
         }
     }
 
@@ -104,6 +104,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public void cancelTracking(View v) {
         isTrackingLocation = false;
+        stopService(locationServiceIntent);
         startActivity(mainActivityIntent);
     }
 
@@ -116,6 +117,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public void saveHike(View v) {
         isTrackingLocation = false;
+        stopService(locationServiceIntent);
 
         for (LatLng latLng : hikeLatLng) {
             hike.addLocation(latLng.latitude, latLng.longitude);
@@ -131,6 +133,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         mMap = googleMap;
     }
 
+    /**
+     * Checks whether the user has the required permissions or not.
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -139,69 +148,57 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    try {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
-                        Debug.print(host, "onRequestPermissionResult", "LocationGranted", "LocationManager requesting", 1);
-                    } catch(SecurityException e) {
-                        e.printStackTrace();
-                    }
-
+                    startService(locationServiceIntent);
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    // TODO: Go back to MainActivity.
+                    // TODO: Go back to MainActivity / Exit application.
                 }
                 return;
             }
         }
     }
 
-    private void initLocationListener() {
-        Debug.print(host, "initLocationListener", "Initializing location listener", "Location listener init", 1);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Debug.print(host, "onLocationChanged", "Changing location", "Location changed", 1);
-
-                if (isTrackingLocation) {
-                    hikeLatLng.add(new LatLng(location.getLatitude(), location.getLongitude()));
-
-                    hikePolyLine = mMap.addPolyline(new PolylineOptions()
-                            .clickable(false));
-                    hikePolyLine.setPoints(hikeLatLng);
-
-                    if (firstLocationGot == false) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-                        firstLocationGot = true;
-                    } else {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), mMap.getCameraPosition().zoom));
-                    }
-                }
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
-    }
-
+    /**
+     * Returns the currently active hike.
+     *
+     * @return
+     */
     public Hike getHike() {
         return hike;
     }
 
-    public LinkedList<LatLng> getLatLng(Hike hike) {
-        LinkedList<LatLng> locs = new LinkedList<>();
+    /**
+     * Receiver for the LocationService's locations.
+     */
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 
-        for (HikeLocation loc: hike.getLocations()) {
-            locs.add(new LatLng(loc.getLat(), loc.getLng()));
+        /**
+         * Sets the given locations to a linked list and draws a line according to them.
+         *
+         * @param context
+         * @param intent
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("Receiving broadcast");
+            LinkedList<LatLng> locations = (LinkedList) intent.getExtras().get("Locations");
+
+            if (isTrackingLocation) {
+                hikeLatLng.add(locations.getLast());
+
+                hikePolyLine = mMap.addPolyline(new PolylineOptions()
+                        .clickable(false));
+                hikePolyLine.setPoints(hikeLatLng);
+
+                if (firstLocationGot == false) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.getLast().latitude, locations.getLast().longitude), 15));
+                    firstLocationGot = true;
+                } else {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.getLast().latitude, locations.getLast().longitude), mMap.getCameraPosition().zoom));
+                }
+            }
         }
-
-        return locs;
-    }
+    };
 }
