@@ -6,10 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 
@@ -21,6 +25,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,6 +56,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private LinkedList<LatLng> hikeLatLng;
     private Intent locationServiceIntent;
     private DateFormat dateFormat;
+    private final int REQUEST_IMAGE_CAPTURE = 1;
+    private final int REQUEST_TAKE_PHOTO = 1;
+    private String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +135,35 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         hikes.add(hike);
         sh.writeStorage(host, hikes);
         startActivity(mainActivityIntent);
+    }
+
+    public void takeImage(View v) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            System.out.println("We have a camera activity!");
+            // Create the File where the photo should go
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File photoFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageFileName);
+
+            System.out.println("PhotoFile: " + photoFile);
+
+            if (photoFile != null) {
+                mCurrentPhotoPath = photoFile.getAbsolutePath();
+                Uri photoURI = Uri.fromFile(photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            System.out.println("We have results!");
+        }
     }
 
     @Override
