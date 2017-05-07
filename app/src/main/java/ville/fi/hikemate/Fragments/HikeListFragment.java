@@ -16,12 +16,10 @@ import android.widget.TextView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import ville.fi.hikemate.Activities.StoredMapActivity;
 import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
-import ville.fi.hikemate.Resources.HikeList;
 import ville.fi.hikemate.Utils.HikeListAdapter;
 import ville.fi.hikemate.Utils.StorageHandler;
 
@@ -47,7 +45,6 @@ public class HikeListFragment extends Fragment {
 
         emptyList = (TextView) view.findViewById(R.id.list_emptyList);
 
-        ObjectMapper mapper = new ObjectMapper();
         StorageHandler sh = new StorageHandler();
         hikes = sh.readStorage(getActivity());
         if (hikes.size() < 1) {
