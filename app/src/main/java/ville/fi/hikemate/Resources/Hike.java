@@ -13,6 +13,7 @@ public class Hike {
 
     private String name;
     private LinkedList<HikeLocation> locations;
+    private LinkedList<PhotoMapMarker> photoMapMarkers;
 
     public Hike() {
 
@@ -21,6 +22,7 @@ public class Hike {
     public Hike(String name) {
         setName(name);
         locations = new LinkedList<>();
+        photoMapMarkers = new LinkedList<>();
     }
 
     public String getName() {
@@ -35,6 +37,12 @@ public class Hike {
         locations.add(new HikeLocation(lat, lng));
     }
 
+    public void addPhotoMapMarker(String path, double lat, double lon) {
+        photoMapMarkers.add(new PhotoMapMarker(path, lat, lon));
+    }
+
+    public LinkedList<PhotoMapMarker> getPhotoMapMarkers() { return photoMapMarkers; }
+
     public LinkedList<HikeLocation> getLocations() {
         return locations;
     }
@@ -46,6 +54,15 @@ public class Hike {
         for (HikeLocation l : locations) {
             hike += l.toString();
             if (!l.equals(locations.get(locations.size() - 1))) {
+                hike += ", ";
+            }
+        }
+
+        hike += ", ";
+
+        for (PhotoMapMarker p : photoMapMarkers) {
+            hike += p.toString();
+            if (!p.equals(photoMapMarkers.get(photoMapMarkers.size() -1))) {
                 hike += ", ";
             }
         }
