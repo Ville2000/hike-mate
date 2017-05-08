@@ -37,5 +37,9 @@ public class Debug {
         Toast toast = Toast.makeText(host, message, Toast.LENGTH_SHORT);
         toast.show();
     }
+
+    public static void toastThis(Context host, String message) {
+        Toast.makeText(host, message, Toast.LENGTH_SHORT).show();
+    }
 }
 
