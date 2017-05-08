@@ -22,6 +22,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -138,19 +139,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public void takeImage(View v) {
+        Debug.toastThis(host, "Taking Image");
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            System.out.println("We have a camera activity!");
-            // Create the File where the photo should go
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_";
-            File photoFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageFileName);
 
-            System.out.println("PhotoFile: " + photoFile);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            Debug.toastThis(host, "We have activity!");
+
+            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_.jpg";
+            File photoFile = new File(storageDir, imageFileName);
+            mCurrentPhotoPath = photoFile.getAbsolutePath();
 
             if (photoFile != null) {
-                mCurrentPhotoPath = photoFile.getAbsolutePath();
+
                 Uri photoURI = Uri.fromFile(photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
@@ -161,9 +163,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
             System.out.println("We have results!");
+            hike.addPhotoMapMarker(mCurrentPhotoPath,
+                    hikeLatLng.getLast().latitude,
+                    hikeLatLng.getLast().longitude);
+            galleryAddPic();
         }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
     }
 
     @Override
