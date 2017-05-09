@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,6 +58,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private Polyline hikePolyLine;
     private boolean firstLocationGot = false;
     private boolean isTrackingLocation;
+    private boolean locationFound = false;
     private Intent mainActivityIntent;
     private LinkedList<LatLng> hikeLatLng;
     private Intent locationServiceIntent;
@@ -64,6 +66,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private final int REQUEST_IMAGE_CAPTURE = 1;
     private final int REQUEST_TAKE_PHOTO = 1;
     private String mCurrentPhotoPath;
+    private Button takeImageButton;
+    private Button cancelTrackingButton;
+    private Button saveTrackingButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         hike = new Hike(dateFormat.format(new Date()));
         hikeLatLng = HikeToLatLng.getLatLng(hike);
 
+        takeImageButton = (Button) findViewById(R.id.button_takeImage);
+        takeImageButton.setEnabled(false);
+        cancelTrackingButton = (Button) findViewById(R.id.button_cancel);
+        cancelTrackingButton.setEnabled(false);
+        saveTrackingButton = (Button) findViewById(R.id.button_stopAndSave);
+        saveTrackingButton.setEnabled(false);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -89,8 +101,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         if (ContextCompat.checkSelfPermission(host,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("Asking permissions, no permissions");
-            Debug.print(host, "Asking permissions", "Requesting permission", "No permissions, dialog", 1);
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
@@ -143,23 +153,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     }
 
     public void takeImage(View v) {
-        Debug.toastThis(host, "Taking Image");
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (locationFound) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            Debug.toastThis(host, "We have activity!");
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
 
-            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_.jpg";
-            File photoFile = new File(storageDir, imageFileName);
-            mCurrentPhotoPath = photoFile.getAbsolutePath();
+                File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String imageFileName = "JPEG_" + timeStamp + "_.jpg";
+                File photoFile = new File(storageDir, imageFileName);
+                mCurrentPhotoPath = photoFile.getAbsolutePath();
 
-            if (photoFile != null) {
+                if (photoFile != null) {
 
-                Uri photoURI = Uri.fromFile(photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    Uri photoURI = Uri.fromFile(photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
             }
         }
     }
@@ -193,6 +203,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Debug.toastThisLonger(host, "Fetching location...");
     }
 
     /**
@@ -205,7 +216,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        Debug.print(host, "onRequestPermissionResult", "Requesting permission", "Requesting permission", 1);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
@@ -244,8 +254,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
          */
         @Override
         public void onReceive(Context context, Intent intent) {
-            System.out.println("Receiving broadcast");
             LinkedList<LatLng> locations = (LinkedList) intent.getExtras().get("Locations");
+
+            if (locationFound == false) {
+                Debug.toastThis(host, "Location fetched, tracking started!");
+                cancelTrackingButton.setEnabled(true);
+                saveTrackingButton.setEnabled(true);
+                takeImageButton.setEnabled(true);
+                locationFound = true;
+            }
 
             if (isTrackingLocation) {
                 hikeLatLng.add(locations.getLast());
