@@ -87,7 +87,6 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
             hikes = sh.readStorage(host);
             hike = HikeToLatLng.getLatLng(hikes.get((int) getIntent().getExtras().get("position")));
             photoMapMarkers = hikes.get((int) getIntent().getExtras().get("position")).getPhotoMapMarkers();
-            Debug.toastThis(this, hike.toString());
         }
     }
 
@@ -118,8 +117,6 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Debug.toastThis(host, "Clicking Markers");
-
                 if (lastClicked != null) {
                     // Close the info window
                     lastClicked.hideInfoWindow();
@@ -169,7 +166,6 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
                     hikes = sh.readStorage(host);
                     hike = HikeToLatLng.getLatLng(hikes.get((int) getIntent().getExtras().get("position")));
                     photoMapMarkers = hikes.get((int) getIntent().getExtras().get("position")).getPhotoMapMarkers();
-                    Debug.toastThis(this, hike.toString());
 
                 } else {
 
