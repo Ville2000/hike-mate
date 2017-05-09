@@ -48,14 +48,12 @@ public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoWindow(Marker marker) {
-        Debug.toastThis(host, "Getting info window");
         render(marker, mInfoWindow);
         return mInfoWindow;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
-        Debug.toastThis(host, "Getting info contents");
         render(marker, mInfoContents);
         return mInfoContents;
     }

@@ -39,7 +39,6 @@ public class StorageHandler {
                 sb.append(line);
             }
 
-            System.out.println("Read success.");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -66,7 +65,6 @@ public class StorageHandler {
             FileOutputStream outputStream = host.openFileOutput("hikes.txt", Context.MODE_PRIVATE);
             outputStream.write(json.getBytes());
             outputStream.close();
-            System.out.println("Write success.");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {

@@ -41,5 +41,9 @@ public class Debug {
     public static void toastThis(Context host, String message) {
         Toast.makeText(host, message, Toast.LENGTH_SHORT).show();
     }
+
+    public static void toastThisLonger(Context host, String message) {
+        Toast.makeText(host, message, Toast.LENGTH_LONG).show();
+    }
 }
 
