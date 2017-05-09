@@ -1,7 +1,5 @@
 package ville.fi.hikemate.Resources;
 
-import com.google.android.gms.maps.model.Marker;
-
 /**
  * Created by Ville on 8.5.2017.
  */

@@ -1,9 +1,6 @@
 package ville.fi.hikemate.Resources;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Ville on 10.4.2017.
