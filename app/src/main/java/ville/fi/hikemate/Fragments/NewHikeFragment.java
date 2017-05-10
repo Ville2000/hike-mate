@@ -21,6 +21,7 @@ public class NewHikeFragment extends Fragment {
      * Default constructor.
      */
     public NewHikeFragment() {
+
     }
 
     /**

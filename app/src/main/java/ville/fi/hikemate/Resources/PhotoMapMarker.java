@@ -111,6 +111,7 @@ public class PhotoMapMarker {
 
         str += "{";
 
-        return "{ \"path\": " + path + ", \"lat\": " + String.valueOf(lat) + ", \"lng\": " + String.valueOf(lon) + "}";
+        return "{ \"path\": " + path + ", \"lat\": " + String.valueOf(lat) +
+                ", \"lng\": " + String.valueOf(lon) + "}";
     }
 }

@@ -34,7 +34,8 @@ import ville.fi.hikemate.Utils.StorageHandler;
  * @version     10.5.2017
  * @since       1.8
  */
-public class StoredMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class StoredMapActivity extends FragmentActivity
+        implements OnMapReadyCallback {
 
     /**
      * Context of the activity.
@@ -100,24 +101,30 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    thisActivity,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
             } else {
                 ActivityCompat.requestPermissions(thisActivity,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        new String[]{
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
             }
         } else {
             sh = new StorageHandler();
 
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+            SupportMapFragment mapFragment =
+                    (SupportMapFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.stored_map);
             mapFragment.getMapAsync(this);
 
             hikes = sh.readStorage(host);
-            hike = HikeToLatLng.getLatLng(hikes.get((int) getIntent().getExtras().get("position")));
-            photoMapMarkers = hikes.get((int) getIntent().getExtras().get("position")).getPhotoMapMarkers();
+            hike = HikeToLatLng.getLatLng(hikes.get(
+                    (int) getIntent().getExtras().get("position")));
+            photoMapMarkers = hikes.get(
+                    (int) getIntent().getExtras().get("position"))
+                    .getPhotoMapMarkers();
         }
     }
 
@@ -135,7 +142,6 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
         mMap = googleMap;
         mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(this));
 
-
         hikePolyLine = mMap.addPolyline(new PolylineOptions()
                 .clickable(false));
         hikePolyLine.setPoints(hike);
@@ -150,7 +156,8 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
 
         initMarkerClickListener(googleMap);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(hike.get(0).latitude, hike.get(0).longitude), 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(hike.get(0).latitude, hike.get(0).longitude), 15));
     }
 
     /**
@@ -194,23 +201,29 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String[] permissions,
+                                           int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] ==
+                        PackageManager.PERMISSION_GRANTED) {
                     sh = new StorageHandler();
 
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    SupportMapFragment mapFragment =
+                            (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.stored_map);
                     mapFragment.getMapAsync(this);
 
                     hikes = sh.readStorage(host);
-                    hike = HikeToLatLng.getLatLng(hikes.get((int) getIntent().getExtras().get("position")));
-                    photoMapMarkers = hikes.get((int) getIntent().getExtras().get("position")).getPhotoMapMarkers();
-
+                    hike = HikeToLatLng.getLatLng(hikes.get((int) getIntent()
+                            .getExtras().get("position")));
+                    photoMapMarkers = hikes.get((int) getIntent().getExtras()
+                            .get("position")).getPhotoMapMarkers();
                 } else {
+
                 }
+
                 return;
             }
         }

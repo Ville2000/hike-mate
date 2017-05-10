@@ -23,6 +23,7 @@ public class HikePlansFragment extends Fragment {
      * Default constructor.
      */
     public HikePlansFragment() {
+
     }
 
     /**

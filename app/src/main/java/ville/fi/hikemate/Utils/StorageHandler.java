@@ -49,10 +49,10 @@ public class StorageHandler {
             BufferedReader bufferedReader = new BufferedReader(isr);
 
             String line;
+
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -62,7 +62,8 @@ public class StorageHandler {
         LinkedList<Hike> hikes = new LinkedList<>();
 
         try {
-            hikes = mapper.readValue(sb.toString(), new TypeReference<LinkedList<Hike>>(){});
+            hikes = mapper.readValue(sb.toString(),
+                    new TypeReference<LinkedList<Hike>>(){});
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,7 +86,8 @@ public class StorageHandler {
 
         try {
             json += mapper.writeValueAsString(hikes);
-            FileOutputStream outputStream = host.openFileOutput("hikes.txt", Context.MODE_PRIVATE);
+            FileOutputStream outputStream =
+                    host.openFileOutput("hikes.txt", Context.MODE_PRIVATE);
             outputStream.write(json.getBytes());
             outputStream.close();
         } catch (JsonProcessingException e) {

@@ -41,6 +41,7 @@ public class HikeListFragment extends Fragment {
      * Default constructor.
      */
     public HikeListFragment() {
+
     }
 
     /**
@@ -66,23 +67,35 @@ public class HikeListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_hike_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_hike_list, container,
+                false);
 
         emptyList = (TextView) view.findViewById(R.id.list_emptyList);
 
         StorageHandler sh = new StorageHandler();
         hikes = sh.readStorage(getActivity());
+
         if (hikes.size() < 1) {
             emptyList.setVisibility(View.VISIBLE);
         } else {
             emptyList.setVisibility(View.GONE);
         }
 
-        HikeListAdapter adapter = new HikeListAdapter(getActivity(), R.layout.hike_list_item, hikes);
+        HikeListAdapter adapter = new HikeListAdapter(getActivity(),
+                R.layout.hike_list_item, hikes);
 
         ListView listView = (ListView) view.findViewById(R.id.ListView_hikes);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * Starts an activity on item click.
+             *
+             * @param parent    parent of the adapter
+             * @param view      view of the adapter
+             * @param position  position of the item
+             * @param id        id of the item
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getActivity(), StoredMapActivity.class);

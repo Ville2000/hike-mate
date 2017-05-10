@@ -114,7 +114,9 @@ public class Hike {
      *
      * @return  hike's photo markers list.
      */
-    public LinkedList<PhotoMapMarker> getPhotoMapMarkers() { return photoMapMarkers; }
+    public LinkedList<PhotoMapMarker> getPhotoMapMarkers() {
+        return photoMapMarkers;
+    }
 
     /**
      * Returns the hike's location list.
@@ -134,8 +136,10 @@ public class Hike {
     public String toString() {
         String hike = "";
         hike += "[";
+
         for (HikeLocation l : locations) {
             hike += l.toString();
+
             if (!l.equals(locations.get(locations.size() - 1))) {
                 hike += ", ";
             }
@@ -145,6 +149,7 @@ public class Hike {
 
         for (PhotoMapMarker p : photoMapMarkers) {
             hike += p.toString();
+
             if (!p.equals(photoMapMarkers.get(photoMapMarkers.size() -1))) {
                 hike += ", ";
             }

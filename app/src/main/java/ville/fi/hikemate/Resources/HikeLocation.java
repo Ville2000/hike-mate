@@ -78,6 +78,7 @@ public class HikeLocation {
      */
     @Override
     public String toString() {
-        return "{ \"lat\":" + String.valueOf(lat) + ", \"lng\":" + String.valueOf(lng) + " }";
+        return "{ \"lat\":" + String.valueOf(lat) + ", \"lng\":" +
+                String.valueOf(lng) + " }";
     }
 }

@@ -187,19 +187,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         saveTrackingButton = (Button) findViewById(R.id.button_stopAndSave);
         saveTrackingButton.setEnabled(false);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        LocalBroadcastManager.getInstance(host).registerReceiver(mMessageReceiver, new IntentFilter("GPSLocations"));
+        LocalBroadcastManager.getInstance(host).registerReceiver(
+                mMessageReceiver, new IntentFilter("GPSLocations"));
         locationServiceIntent = new Intent(host, LocationService.class);
 
         if (ContextCompat.checkSelfPermission(host,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    thisActivity, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
             } else {
                 ActivityCompat.requestPermissions(thisActivity,
@@ -250,12 +252,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     public void takeImage(View v) {
         if (locationFound) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent takePictureIntent = new Intent(
+                    MediaStore.ACTION_IMAGE_CAPTURE);
 
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            if (takePictureIntent.resolveActivity(
+                    getPackageManager()) != null) {
 
-                File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                File storageDir = Environment
+                        .getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_PICTURES);
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                        .format(new Date());
                 String imageFileName = "JPEG_" + timeStamp + "_.jpg";
                 File photoFile = new File(storageDir, imageFileName);
                 mCurrentPhotoPath = photoFile.getAbsolutePath();
@@ -263,8 +270,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 if (photoFile != null) {
 
                     Uri photoURI = Uri.fromFile(photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    takePictureIntent.putExtra(
+                            MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(
+                            takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
             }
         }
@@ -281,12 +290,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      * @param data          data of the result
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             System.out.println("We have results!");
 
             mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(hikeLatLng.getLast().latitude, hikeLatLng.getLast().longitude))
+                    .position(new LatLng(hikeLatLng.getLast().latitude,
+                            hikeLatLng.getLast().longitude))
                     );
             hike.addPhotoMapMarker(mCurrentPhotoPath,
                     hikeLatLng.getLast().latitude,
@@ -299,7 +310,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      * Sets the user taken photo to the gallery of the device.
      */
     private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Intent mediaScanIntent = new Intent(
+                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
@@ -314,7 +326,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
     }
 
     /**
@@ -326,15 +337,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
      */
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String[] permissions,
+                                           int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] ==
+                        PackageManager.PERMISSION_GRANTED) {
                     startService(locationServiceIntent);
                     Debug.toastThisLonger(host, "Fetching location...");
                 } else {
+
                 }
+
                 return;
             }
         }
@@ -365,7 +380,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
          */
         @Override
         public void onReceive(Context context, Intent intent) {
-            LinkedList<LatLng> locations = (LinkedList) intent.getExtras().get("Locations");
+            LinkedList<LatLng> locations =
+                    (LinkedList) intent.getExtras().get("Locations");
 
             if (locationFound == false) {
                 Debug.toastThis(host, "Location fetched, tracking started!");
@@ -383,10 +399,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 hikePolyLine.setPoints(hikeLatLng);
 
                 if (firstLocationGot == false) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.getLast().latitude, locations.getLast().longitude), 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(locations.getLast().latitude,
+                                    locations.getLast().longitude), 15));
                     firstLocationGot = true;
                 } else {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.getLast().latitude, locations.getLast().longitude), mMap.getCameraPosition().zoom));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(locations.getLast().latitude,
+                                    locations.getLast().longitude),
+                            mMap.getCameraPosition().zoom));
                 }
             }
         }

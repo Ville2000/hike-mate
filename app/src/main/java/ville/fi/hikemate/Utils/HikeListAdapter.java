@@ -44,7 +44,8 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
      * @param resource  resource of the adapter
      * @param hikeList  list of user saved hikes
      */
-    public HikeListAdapter(Context host, int resource, LinkedList<Hike> hikeList) {
+    public HikeListAdapter(Context host, int resource,
+                           LinkedList<Hike> hikeList) {
         super(host, resource, hikeList);
         this.host = host;
         this.hikes = hikeList;
@@ -63,7 +64,8 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
      */
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView,
+                        @NonNull ViewGroup parent) {
         View view = convertView;
         HikeHolder hh;
 
@@ -77,7 +79,8 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
             }
 
             hh.listTitle = (TextView) view.findViewById(R.id.list_item_title);
-            hh.listSubtitle = (TextView) view.findViewById(R.id.list_item_subtitle);
+            hh.listSubtitle = (TextView) view.findViewById(
+                    R.id.list_item_subtitle);
             view.setTag(hh);
         } else {
             hh = (HikeHolder) view.getTag();
@@ -97,8 +100,16 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
      * @version     10.5.2017
      * @since       1.8
      */
-    class HikeHolder {
+    public class HikeHolder {
+
+        /**
+         * List item's title.
+         */
         public TextView listTitle;
+
+        /**
+         * List item's subtitle.
+         */
         public TextView listSubtitle;
     }
 }

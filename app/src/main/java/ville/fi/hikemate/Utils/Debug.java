@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.Toast;
 import ville.fi.hikemate.R;
 
-
 /**
  * Debug is a helper class for debugging the app.
  *
@@ -30,7 +29,8 @@ public class Debug {
      * @param message       message of the debug message
      * @param level         level of the message
      */
-    public static void print(String className, String tag, String message,  int level) {
+    public static void print(String className, String tag, String message,
+                             int level) {
         if (level <= DEBUG_LEVEL) {
             String logTag = className + "." + tag;
             Log.d(logTag, message);
@@ -46,8 +46,10 @@ public class Debug {
      * @param message       message of the debug message
      * @param level         level of the message
      */
-    public static void print(Context host, String className, String tag, String message,  int level) {
+    public static void print(Context host, String className, String tag,
+                             String message,  int level) {
         Log.d("print", "Printing");
+
         if (level <= DEBUG_LEVEL) {
             String logTag = className + "." + tag;
             Log.d(logTag, message);
@@ -61,12 +63,13 @@ public class Debug {
      * @param host  host of the request
      */
     public static void loadDebug(Context host) {
-        DEBUG_LEVEL = Integer.parseInt(host.getResources().getString(R.string.debugLevel));
+        DEBUG_LEVEL = Integer.parseInt(host.getResources()
+                .getString(R.string.debugLevel));
         print("This", "Level", String.valueOf(DEBUG_LEVEL), 1);
     }
 
     /**
-     * Shows a toast of the debug message
+     * Shows a toast of the debug message.
      *
      * @param host      host of the request
      * @param message   message of the debug message
@@ -96,4 +99,3 @@ public class Debug {
         Toast.makeText(host, message, Toast.LENGTH_LONG).show();
     }
 }
-

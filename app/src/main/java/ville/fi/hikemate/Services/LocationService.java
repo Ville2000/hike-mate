@@ -50,6 +50,7 @@ public class LocationService extends Service {
      * Default constructor.
      */
     public LocationService() {
+
     }
 
     /**
@@ -81,15 +82,19 @@ public class LocationService extends Service {
             isServiceRunning = true;
 
             locations = new LinkedList<>();
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager)
+                    getSystemService(Context.LOCATION_SERVICE);
             initLocationListener();
 
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 1, locationListener);
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        500, 1, locationListener);
             } catch(SecurityException e) {
                 e.printStackTrace();
             }
         }
+
         return START_STICKY;
     }
 
@@ -116,11 +121,13 @@ public class LocationService extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                sendGPSLocations(location.getLatitude(), location.getLongitude());
+                sendGPSLocations(location.getLatitude(),
+                        location.getLongitude());
             }
 
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {}
 
             @Override
             public void onProviderEnabled(String provider) {}

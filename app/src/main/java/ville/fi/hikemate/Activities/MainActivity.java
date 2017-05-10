@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(
+                getSupportFragmentManager());
         adapter.addFragment(new NewHikeFragment(), "New Hike");
         adapter.addFragment(new HikeListFragment(), "Your Hikes");
         adapter.addFragment(new HikePlansFragment(), "Hike Plans");

@@ -13,4 +13,5 @@ import java.util.LinkedList;
  * @since       1.8
  */
 public class HikeList extends LinkedList<Hike> {
+
 }

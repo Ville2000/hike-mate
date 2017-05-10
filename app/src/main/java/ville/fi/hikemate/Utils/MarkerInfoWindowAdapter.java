@@ -55,8 +55,10 @@ public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
      * @param host  host of the adapter
      */
     public MarkerInfoWindowAdapter(FragmentActivity host) {
-        mInfoWindow = host.getLayoutInflater().inflate(R.layout.marker_info_window, null);
-        mInfoContents = host.getLayoutInflater().inflate(R.layout.marker_info_window_contents, null);
+        mInfoWindow = host.getLayoutInflater().inflate(
+                R.layout.marker_info_window, null);
+        mInfoContents = host.getLayoutInflater().inflate(
+                R.layout.marker_info_window_contents, null);
         configuration = new ImageLoaderConfiguration.Builder(host).build();
         ImageLoader.getInstance().init(configuration);
         imageLoader = ImageLoader.getInstance();
