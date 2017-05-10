@@ -7,23 +7,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/list_title"
-        android:padding="16px"
-        android:text="Your Hikes"
-        android:textSize="17sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/list_emptyList"
-        android:padding="16px"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:layout_marginTop="6dp"
         android:text="You dont have any hikes. You can start tracking hikes in the 'NEW HIKE' tab."
-        android:textSize="15sp"
-        android:layout_below="@+id/list_title"/>
+        android:textSize="13sp" />
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginTop="4dp"
         android:id="@+id/ListView_hikes"
-        android:layout_below="@+id/list_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:divider="@null"
