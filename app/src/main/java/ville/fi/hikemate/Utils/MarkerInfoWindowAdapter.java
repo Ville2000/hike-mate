@@ -59,7 +59,6 @@ public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     private void render(final Marker marker, View view) {
-        Debug.toastThis(host, marker.getSnippet());
         ImageView image = (ImageView) view.findViewById(R.id.marker_photo);
         imageLoader.displayImage("file:///" + marker.getSnippet(), image, options);
     }
