@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_enabled="false" >
+    <item android:state_enabled="false">
         <shape>
             <gradient
                 android:endColor="@color/colorDisabledButton"
@@ -16,10 +16,6 @@
                 android:top="11dp"
                 android:right="16dp"
                 android:bottom="11dp" />
-
-            <margin
-                android:layout_marginTop="16dp"
-                />
         </shape>
     </item>
 
@@ -39,10 +35,6 @@
                 android:top="11dp"
                 android:right="16dp"
                 android:bottom="11dp" />
-
-            <margin
-                android:layout_marginTop="16dp"
-                />
         </shape>
     </item>
 </selector>
