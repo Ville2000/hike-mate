@@ -79,8 +79,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         isTrackingLocation = true;
         sh = new StorageHandler();
         hikes = sh.readStorage(host);
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        hike = new Hike(dateFormat.format(new Date()));
+        Date date = new Date();
+        dateFormat = new SimpleDateFormat("d MMM yyyy");
+        hike = new Hike(dateFormat.format(date));
+        dateFormat = new SimpleDateFormat("HH:mm");
+        hike.setTime(dateFormat.format(date));
         hikeLatLng = HikeToLatLng.getLatLng(hike);
 
         takeImageButton = (Button) findViewById(R.id.button_takeImage);
@@ -118,6 +121,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             }
         } else {
             startService(locationServiceIntent);
+            Debug.toastThisLonger(host, "Fetching location...");
         }
     }
 
@@ -147,7 +151,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
             hike.addLocation(latLng.latitude, latLng.longitude);
         }
 
-        hikes.add(hike);
+        hikes.addFirst(hike);
         sh.writeStorage(host, hikes);
         startActivity(mainActivityIntent);
     }
@@ -203,7 +207,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Debug.toastThisLonger(host, "Fetching location...");
+
     }
 
     /**
@@ -221,6 +225,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startService(locationServiceIntent);
+                    Debug.toastThisLonger(host, "Fetching location...");
                 } else {
 
                     // permission denied, boo! Disable the
