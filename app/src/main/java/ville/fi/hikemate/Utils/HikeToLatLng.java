@@ -8,11 +8,20 @@ import ville.fi.hikemate.Resources.Hike;
 import ville.fi.hikemate.Resources.HikeLocation;
 
 /**
- * Created by Ville on 25.4.2017.
+ * HikeToLatLng transfers a hike's location list to a LatLng list.
+ *
+ * @author      Ville Haapavaara
+ * @version     10.5.2017
+ * @since       1.8
  */
-
 public class HikeToLatLng {
 
+    /**
+     * Returns a LatLng list of hike's locations.
+     *
+     * @param hike  hike to transfer
+     * @return      latlng list of hike's locations
+     */
     public static LinkedList<LatLng> getLatLng(Hike hike) {
         LinkedList<LatLng> locs = new LinkedList<>();
 

@@ -17,20 +17,50 @@ import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
 
 /**
- * Created by Ville on 10.4.2017.
+ * HikeListAdapter is an adapter for the hike list view.
+ *
+ * HikeListAdapter sets a custom view for the hike list.
+ *
+ * @author      Ville Haapavaara
+ * @version     10.5.2017
+ * @since       1.8
  */
-
 public class HikeListAdapter extends ArrayAdapter<Hike> {
 
+    /**
+     * Host of the adapter.
+     */
     private Context host;
+
+    /**
+     * List of the user's hikes.
+     */
     private LinkedList<Hike> hikes;
 
+    /**
+     * Constructs a new hike list adapter and sets it's attributes.
+     *
+     * @param host      host of the adapter
+     * @param resource  resource of the adapter
+     * @param hikeList  list of user saved hikes
+     */
     public HikeListAdapter(Context host, int resource, LinkedList<Hike> hikeList) {
         super(host, resource, hikeList);
         this.host = host;
         this.hikes = hikeList;
     }
 
+    /**
+     * Returns a view for the hike list.
+     *
+     * Sets the background color of every odd row to a light purple
+     * and sets the title and subtitle of the hike accordingly.
+     *
+     * @param position      position of an item on the list
+     * @param convertView   convert view of the list
+     * @param parent        parent of the list
+     * @return              returns a view for the list
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -60,6 +90,13 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
         return view;
     }
 
+    /**
+     * HikeHolder is a helper class to hold hike's list view data.
+     *
+     * @author      Ville Haapavaara
+     * @version     10.5.2017
+     * @since       1.8
+     */
     class HikeHolder {
         public TextView listTitle;
         public TextView listSubtitle;

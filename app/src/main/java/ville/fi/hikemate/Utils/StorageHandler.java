@@ -13,19 +13,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
-import java.util.List;
 
 import ville.fi.hikemate.Resources.Hike;
-import ville.fi.hikemate.Resources.HikeList;
 
 /**
- * Created by Ville on 10.4.2017.
+ * StorageHandler handles the external storage operations.
+ *
+ * @author      Ville Haapavaara
+ * @version     10.5.2017
+ * @since       1.8
  */
-
 public class StorageHandler {
 
+    /**
+     * Mapper for the reading and writing.
+     */
     ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Returns a list of hikes.
+     *
+     * Tries to read a 'hikes.txt' named file to a string. The mapper then
+     * converts this string to a linked list object that's passed to the
+     * caller.
+     *
+     * @param host  host of the request
+     * @return      a list of hikes
+     */
     public LinkedList<Hike> readStorage(Context host) {
         StringBuilder sb = new StringBuilder();
 
@@ -56,6 +70,15 @@ public class StorageHandler {
         return hikes;
     }
 
+    /**
+     * Writes a list of hikes to a file.
+     *
+     * Converts a list of hikes to a string and then writes them to a
+     * 'hikes.txt' file.
+     *
+     * @param host  host of the request
+     * @param hikes hikes to be saved
+     */
     public void writeStorage(Context host, LinkedList<Hike> hikes) {
         String json = "";
         ObjectMapper mapper = new ObjectMapper();
