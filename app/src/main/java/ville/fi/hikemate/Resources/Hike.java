@@ -9,6 +9,7 @@ import java.util.LinkedList;
 public class Hike {
 
     private String name;
+    private String time;
     private LinkedList<HikeLocation> locations;
     private LinkedList<PhotoMapMarker> photoMapMarkers;
 
@@ -28,6 +29,14 @@ public class Hike {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public void addLocation(double lat, double lng) {
