@@ -42,6 +42,7 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
     private Polyline hikePolyLine;
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
     private Marker lastClicked;
+    private String lastMarkerPath;
 
     /**
      * Initializes this activity's attributes.
@@ -134,8 +135,9 @@ public class StoredMapActivity extends FragmentActivity implements OnMapReadyCal
                 marker.showInfoWindow();
                 // Re-assign the last opened such that we can close it later
                 lastClicked = marker;
+
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(marker.getPosition().latitude + 0.003,
+                        new LatLng(marker.getPosition().latitude + 0.005,
                                 marker.getPosition().longitude),
                         15));
 
