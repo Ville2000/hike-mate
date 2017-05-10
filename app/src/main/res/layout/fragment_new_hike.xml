@@ -4,11 +4,30 @@
     android:layout_height="match_parent"
     tools:context="ville.fi.hikemate.Fragments.NewHikeFragment">
 
-
-    <Button
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Hike"
+        android:id="@+id/new_hike_info_line1"
+        android:text="To start tracking a new hike"
+        android:textAlignment="center"
+        android:layout_above="@+id/new_hike_info_line2"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="click the button below"
+        android:textAlignment="center"
+        android:id="@+id/new_hike_info_line2"
+        android:layout_above="@+id/button_startTracking"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start tracking"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/colorPrimaryWhiteText"
+        android:layout_marginTop="4dp"
+        android:layout_centerInParent="true"
         android:id="@+id/button_startTracking"
         android:onClick="startTracking"/>
 

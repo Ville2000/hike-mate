@@ -13,19 +13,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
-import java.util.List;
 
 import ville.fi.hikemate.Resources.Hike;
-import ville.fi.hikemate.Resources.HikeList;
 
 /**
- * Created by Ville on 10.4.2017.
+ * StorageHandler handles the external storage operations.
+ *
+ * @author      Ville Haapavaara
+ * @version     10.5.2017
+ * @since       1.8
  */
-
 public class StorageHandler {
 
+    /**
+     * Mapper for the reading and writing.
+     */
     ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Returns a list of hikes.
+     *
+     * Tries to read a 'hikes.txt' named file to a string. The mapper then
+     * converts this string to a linked list object that's passed to the
+     * caller.
+     *
+     * @param host  host of the request
+     * @return      a list of hikes
+     */
     public LinkedList<Hike> readStorage(Context host) {
         StringBuilder sb = new StringBuilder();
 
@@ -35,11 +49,10 @@ public class StorageHandler {
             BufferedReader bufferedReader = new BufferedReader(isr);
 
             String line;
+
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
-
-            System.out.println("Read success.");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -49,7 +62,8 @@ public class StorageHandler {
         LinkedList<Hike> hikes = new LinkedList<>();
 
         try {
-            hikes = mapper.readValue(sb.toString(), new TypeReference<LinkedList<Hike>>(){});
+            hikes = mapper.readValue(sb.toString(),
+                    new TypeReference<LinkedList<Hike>>(){});
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,16 +71,25 @@ public class StorageHandler {
         return hikes;
     }
 
+    /**
+     * Writes a list of hikes to a file.
+     *
+     * Converts a list of hikes to a string and then writes them to a
+     * 'hikes.txt' file.
+     *
+     * @param host  host of the request
+     * @param hikes hikes to be saved
+     */
     public void writeStorage(Context host, LinkedList<Hike> hikes) {
         String json = "";
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             json += mapper.writeValueAsString(hikes);
-            FileOutputStream outputStream = host.openFileOutput("hikes.txt", Context.MODE_PRIVATE);
+            FileOutputStream outputStream =
+                    host.openFileOutput("hikes.txt", Context.MODE_PRIVATE);
             outputStream.write(json.getBytes());
             outputStream.close();
-            System.out.println("Write success.");
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {

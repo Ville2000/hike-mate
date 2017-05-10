@@ -2,6 +2,7 @@ package ville.fi.hikemate.Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -16,23 +17,55 @@ import ville.fi.hikemate.R;
 import ville.fi.hikemate.Resources.Hike;
 
 /**
- * Created by Ville on 10.4.2017.
+ * HikeListAdapter is an adapter for the hike list view.
+ *
+ * HikeListAdapter sets a custom view for the hike list.
+ *
+ * @author      Ville Haapavaara
+ * @version     10.5.2017
+ * @since       1.8
  */
-
 public class HikeListAdapter extends ArrayAdapter<Hike> {
 
+    /**
+     * Host of the adapter.
+     */
     private Context host;
+
+    /**
+     * List of the user's hikes.
+     */
     private LinkedList<Hike> hikes;
 
-    public HikeListAdapter(Context host, int resource, LinkedList<Hike> hikeList) {
+    /**
+     * Constructs a new hike list adapter and sets it's attributes.
+     *
+     * @param host      host of the adapter
+     * @param resource  resource of the adapter
+     * @param hikeList  list of user saved hikes
+     */
+    public HikeListAdapter(Context host, int resource,
+                           LinkedList<Hike> hikeList) {
         super(host, resource, hikeList);
         this.host = host;
         this.hikes = hikeList;
     }
 
+    /**
+     * Returns a view for the hike list.
+     *
+     * Sets the background color of every odd row to a light purple
+     * and sets the title and subtitle of the hike accordingly.
+     *
+     * @param position      position of an item on the list
+     * @param convertView   convert view of the list
+     * @param parent        parent of the list
+     * @return              returns a view for the list
+     */
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView,
+                        @NonNull ViewGroup parent) {
         View view = convertView;
         HikeHolder hh;
 
@@ -41,7 +74,13 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
             LayoutInflater inflater = ((Activity) host).getLayoutInflater();
             view = inflater.inflate(R.layout.hike_list_item, parent, false);
 
-            hh.listTitle = (TextView) view.findViewById(R.id.list_item);
+            if (position % 2 == 1) {
+                view.setBackgroundColor(Color.parseColor("#D1C4E9"));
+            }
+
+            hh.listTitle = (TextView) view.findViewById(R.id.list_item_title);
+            hh.listSubtitle = (TextView) view.findViewById(
+                    R.id.list_item_subtitle);
             view.setTag(hh);
         } else {
             hh = (HikeHolder) view.getTag();
@@ -49,11 +88,28 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
 
         Hike hike = hikes.get(position);
         hh.listTitle.setText(hike.getName());
+        hh.listSubtitle.setText(hike.getTime());
 
         return view;
     }
 
-    class HikeHolder {
+    /**
+     * HikeHolder is a helper class to hold hike's list view data.
+     *
+     * @author      Ville Haapavaara
+     * @version     10.5.2017
+     * @since       1.8
+     */
+    public class HikeHolder {
+
+        /**
+         * List item's title.
+         */
         public TextView listTitle;
+
+        /**
+         * List item's subtitle.
+         */
+        public TextView listSubtitle;
     }
 }
