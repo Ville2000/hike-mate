@@ -2,6 +2,7 @@ package ville.fi.hikemate.Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -41,7 +42,12 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
             LayoutInflater inflater = ((Activity) host).getLayoutInflater();
             view = inflater.inflate(R.layout.hike_list_item, parent, false);
 
-            hh.listTitle = (TextView) view.findViewById(R.id.list_item);
+            if (position % 2 == 1) {
+                view.setBackgroundColor(Color.parseColor("#D1C4E9"));
+            }
+
+            hh.listTitle = (TextView) view.findViewById(R.id.list_item_title);
+            hh.listSubtitle = (TextView) view.findViewById(R.id.list_item_subtitle);
             view.setTag(hh);
         } else {
             hh = (HikeHolder) view.getTag();
@@ -49,11 +55,13 @@ public class HikeListAdapter extends ArrayAdapter<Hike> {
 
         Hike hike = hikes.get(position);
         hh.listTitle.setText(hike.getName());
+        hh.listSubtitle.setText(hike.getTime());
 
         return view;
     }
 
     class HikeHolder {
         public TextView listTitle;
+        public TextView listSubtitle;
     }
 }
